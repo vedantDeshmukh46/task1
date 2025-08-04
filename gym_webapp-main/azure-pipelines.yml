@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - main  # Change if you're working on another branch
+
+pool:
+  name: Default  # This uses your EC2 self-hosted agent
+
+steps:
+
+- script: |
+    echo "Installing dependencies..."
+    npm install --legacy-peer-deps
+  displayName: 'Install dependencies'
+
+- script: |
+    echo "Building the React app..."
+    npm run build
+  displayName: 'Build the app'
+
+# CD: Deploy to Nginx folder
+- script: |
+    echo "Deploying build to Nginx folder..."
+    sudo rm -rf /usr/share/nginx/html/*
+    sudo cp -r build/* /usr/share/nginx/html/
+  displayName: 'Deploy to /usr/share/nginx/html for Nginx'
